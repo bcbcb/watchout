@@ -15,6 +15,10 @@ svg {
   fill: #999;
 }
 
+circle {
+  background-image: url('shuriken.gif');
+}
+
 .player {
   fill: red;
   border: 1px solid black;

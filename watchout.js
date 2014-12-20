@@ -1,8 +1,13 @@
 var svg = d3.select('body').append('svg');
 
-var numberOfAsteroids = 5;
+var numberOfAsteroids = 3;
 var asteroidsRange = [];
 var asteroidData;
+var score = 0;
+var highScore = 0;
+var collisions = 0;
+var collisionTimer, moveTimer;
+var collided = false;
 
 for (var i = 0; i < numberOfAsteroids; i++) {
   asteroidsRange[i] = i;
@@ -32,6 +37,7 @@ var asteroids = svg.selectAll('circle')
   .data(asteroidData)
   .enter()
   .append('circle')
+  .attr('xlink:href', 'shuriken.gif')
   .attr('cx', function(d) { return d.x })
   .attr('cy', function(d) { return d.y })
   .attr('class', 'asteroid')
@@ -61,13 +67,20 @@ var player = svg.append('circle')
   .attr('cx', function(d) { return d.x })
   .attr('cy', function(d) { return d.y })
 
-var collisionCheck = function(a) {
+var collisionCheck = function(x, y) {
   var threshold = 20;
   var p = player.data()[0];
-  var distance = Math.sqrt ( Math.pow((p.x - a.x), 2) + Math.pow((p.y - a.y), 2) );
-   console.log(a.id)
+  var distance = Math.sqrt ( Math.pow((p.x - x), 2) + Math.pow((p.y - y), 2) );
   if (distance <= threshold) {
-    console.log('hit me!');
+    collided = true;
+    setTimeout(function() {
+      collided = false;
+    }, 500);
+
+    score = 0;
+    collisions++;
+
+    d3.select('.collisions span').text(collisions);
   }
 }
 
@@ -84,12 +97,30 @@ var drag = d3.behavior.drag()
       })
   })
 
-setInterval( function() {
-  for (var i = 0; i < asteroids.data().length; i++) {
-    collisionCheck(asteroids.data()[i]);
+var updateCurrentScore = function() {
+  score++;
+  if (score > highScore) {
+    highScore = score;
   }
-}, 1);
+  d3.select('.current span').text(score);
+  d3.select('.high span').text(highScore);
+
+}
+scoreTimer = setInterval(updateCurrentScore, 5);
+
+var collisionStart = function() {
+  if (!collided) {
+    asteroids.each(function() {
+      var singleAsteroid = d3.select(this)
+      collisionCheck(singleAsteroid.attr('cx'), singleAsteroid.attr('cy'));
+    })
+  }
+}
+
+
+collisionTimer = setInterval(collisionStart, 5);
 
 player.call(drag)
 
-setInterval(move, 1000);
+moveTimer = setInterval(move, 1000);
+
