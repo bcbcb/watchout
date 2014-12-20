@@ -1,0 +1,58 @@
+// start slingin' some d3 here.
+
+var init = function(width, height) {
+  // Put one circle
+  var numberOfAstroids =  2;
+
+  var asteroidsRange = [];
+  for (var i = 0; i < numberOfAstroids; i++) {
+    asteroidsRange[i] = i;
+  }
+
+  var newPositions = function() {
+    return asteroidsRange.map(function(i) {
+      return {
+        id: i,
+        x: randomX(),
+        y: randomY()
+      };
+    });
+  }
+
+  var boardGame = d3.select('svg').append('svg').enter()
+  var enemies = boardgame.select('circle').data(data).append('circle').enter()
+  var child = enemies.select('circle').data(data2).append('circle').enter()
+  var initiateAstroids = function() {
+    d3.select('svg')
+      .append('circle')
+      .data(newPositions())
+      .enter()
+      .attr('cx', function(d){ return d.x })
+      .attr('cy', function(d){ return d.y })
+      .attr('r', 10);
+  };
+
+  initiateAstroids();
+
+  // var move = function() {
+  //  d3.selectAll('circle')
+  //          .transition()
+  //       .duration(1000)
+  //   .attr('cy', randomY())
+  //   .attr('cx', randomX())
+  // }
+
+  // var interval = setInterval(move, 1000);
+
+};
+
+
+var randomX = function () {
+  return Math.random() * 600;
+}
+var randomY = function () {
+  return Math.random() * 500;
+}
+
+init();
+
