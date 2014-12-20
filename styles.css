@@ -3,11 +3,20 @@
 /* Note: an asteroid image is included in this repo.
 Feel free to use it if you like. */
 body{
-  margin: 0 auto;
+  margin: 20px auto;
+  font-family: Helvetica;
+
 }
 svg {
   height: 500px;
   width: 600px;
-  margin: 0px auto;
+  margin: 0 20px;
   border: 3px solid black;
+  fill: #999;
+}
+
+.player {
+  fill: red;
+  border: 1px solid black;
+  cursor: pointer;
 }
