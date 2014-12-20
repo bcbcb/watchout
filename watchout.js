@@ -1,6 +1,6 @@
 var svg = d3.select('body').append('svg');
 
-var numberOfAsteroids = 3;
+var numberOfAsteroids = 31;
 var asteroidsRange = [];
 var asteroidData;
 var score = 0;
@@ -26,30 +26,32 @@ var newPositions = function() {
     return {
       id: i,
       x: randomX(),
-      y: randomY()
+      y: randomY(),
+      rotation: 0
     };
   });
 }
 
 asteroidData = newPositions();
 
-var asteroids = svg.selectAll('circle')
+var asteroids = svg.selectAll('image')
   .data(asteroidData)
   .enter()
-  .append('circle')
+  .append('image')
   .attr('xlink:href', 'shuriken.gif')
-  .attr('cx', function(d) { return d.x })
-  .attr('cy', function(d) { return d.y })
+  .attr('x', function(d) { return d.x })
+  .attr('y', function(d) { return d.y })
   .attr('class', 'asteroid')
-  .attr('r', 10);
+  .attr('height', 20)
+  .attr('width', 20);
 
 var move = function () {
   asteroids.transition()
-    .attr('cx', function(d) {
+    .attr('x', function(d) {
       d.x = randomX();
       return d.x;
     })
-    .attr('cy', function(d) {
+    .attr('y', function(d) {
       d.y = randomY();
       return d.y;
     })
@@ -75,7 +77,7 @@ var collisionCheck = function(x, y) {
     collided = true;
     setTimeout(function() {
       collided = false;
-    }, 500);
+    }, 900);
 
     score = 0;
     collisions++;
@@ -112,11 +114,23 @@ var collisionStart = function() {
   if (!collided) {
     asteroids.each(function() {
       var singleAsteroid = d3.select(this)
-      collisionCheck(singleAsteroid.attr('cx'), singleAsteroid.attr('cy'));
+      collisionCheck(singleAsteroid.attr('x'), singleAsteroid.attr('y'));
     })
   }
 }
 
+var spinShuriken = function() {
+  asteroids.each(function() {
+    d3.select(this).attr('transform', function(d) {
+      d.rotation = d.rotation + 2;
+      return 'rotate(' +  d.rotation + ' '
+        + (d3.select(this).attr('x') - 10) + ' '
+        + (d3.select(this).attr('y') - 10) + ')'
+    })
+  })
+}
+
+// setInterval(spinShuriken, 1);
 
 collisionTimer = setInterval(collisionStart, 5);
 
